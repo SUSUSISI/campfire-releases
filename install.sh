@@ -28,10 +28,10 @@ fi
 
 # 마운트 및 설치
 echo "설치 중..."
-MOUNT_OUT=$(hdiutil attach "$DMG_PATH" -nobrowse -noautoopen 2>/dev/null)
-MOUNT_POINT=$(echo "$MOUNT_OUT" | awk '/\/Volumes/ {print $NF}')
+MOUNT_POINT="$TMP_DIR/mount"
+mkdir -p "$MOUNT_POINT"
 
-if [ -z "$MOUNT_POINT" ]; then
+if ! hdiutil attach "$DMG_PATH" -nobrowse -noautoopen -mountpoint "$MOUNT_POINT" >/dev/null 2>&1; then
     echo "오류: DMG 마운트에 실패했습니다."
     exit 1
 fi

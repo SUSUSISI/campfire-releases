@@ -13,13 +13,6 @@ macOS용 ambient presence 컴패니언 앱입니다.
 ```sh
 curl -fsSL https://raw.githubusercontent.com/SUSUSISI/campfire-releases/main/install.sh | sh
 ```
-
-설치 스크립트가 최근 업데이트된 경우 캐시로 인해 구버전이 실행될 수 있습니다. 아래 명령어로 최신 버전을 강제로 받을 수 있습니다.
-
-```sh
-curl -fsSL "https://raw.githubusercontent.com/SUSUSISI/campfire-releases/main/install.sh?$(date +%s)" | sh
-```
-
 ## 업데이트
 
 앱이 실행 중일 때 새 버전이 릴리즈되면 자동으로 감지하여 설치합니다.

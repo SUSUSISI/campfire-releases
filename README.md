@@ -14,11 +14,6 @@ macOS용 ambient presence 컴패니언 앱입니다.
 curl -fsSL https://raw.githubusercontent.com/SUSUSISI/campfire-releases/main/install.sh | sh
 ```
 
-설치 후 아래 두 가지 권한을 허용해야 합니다.
-
-- **손쉬운 사용 (Accessibility)** — 전역 단축키 사용
-- **입력 모니터링 (Input Monitoring)** — presence 상태 자동 감지
-
 ## 업데이트
 
 앱이 실행 중일 때 새 버전이 릴리즈되면 자동으로 감지하여 설치합니다.

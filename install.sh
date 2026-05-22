@@ -49,30 +49,4 @@ echo ""
 echo "설치 완료!"
 echo ""
 
-# 권한 안내
-echo "Campfire는 아래 두 가지 권한이 필요합니다."
-echo "각 항목에서 Campfire를 찾아 허용해 주세요."
-echo ""
-
-echo "[1/2] 손쉬운 사용 (Accessibility)"
-echo "  전역 단축키(퀵팔레트, 위젯 토글 등) 사용에 필요합니다."
-printf "  System Settings를 여시겠습니까? [Y/n] "
-read -r yn
-case "${yn:-Y}" in
-    [Nn]*) ;;
-    *) open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility" ;;
-esac
-
-echo ""
-echo "[2/2] 입력 모니터링 (Input Monitoring)"
-echo "  키보드·마우스 활동 감지로 presence 상태를 변경합니다."
-printf "  System Settings를 여시겠습니까? [Y/n] "
-read -r yn
-case "${yn:-Y}" in
-    [Nn]*) ;;
-    *) open "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent" ;;
-esac
-
-echo ""
-echo "권한을 허용한 후 Campfire를 시작합니다..."
 open "$INSTALL_PATH"

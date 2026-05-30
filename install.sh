@@ -7,8 +7,14 @@ INSTALL_PATH="/Applications/Campfire.app"
 DOWNLOAD_URL="https://github.com/$RELEASE_REPO/releases/latest/download/Campfire.dmg"
 TMP_DIR=$(mktemp -d)
 DMG_PATH="$TMP_DIR/Campfire.dmg"
+MOUNT_POINT="$TMP_DIR/mount"
 
-trap 'rm -rf "$TMP_DIR"' EXIT
+cleanup() {
+    hdiutil detach "$MOUNT_POINT" -quiet 2>/dev/null || true
+    rm -rf "$TMP_DIR"
+}
+
+trap cleanup EXIT
 
 echo "Campfire 설치를 시작합니다..."
 
@@ -28,7 +34,6 @@ fi
 
 # 마운트 및 설치
 echo "설치 중..."
-MOUNT_POINT="$TMP_DIR/mount"
 mkdir -p "$MOUNT_POINT"
 
 if ! hdiutil attach "$DMG_PATH" -nobrowse -noautoopen -mountpoint "$MOUNT_POINT" >/dev/null 2>&1; then
@@ -36,17 +41,30 @@ if ! hdiutil attach "$DMG_PATH" -nobrowse -noautoopen -mountpoint "$MOUNT_POINT"
     exit 1
 fi
 
+if pgrep -x Campfire >/dev/null 2>&1; then
+    echo "실행 중인 Campfire를 종료합니다..."
+    osascript -e 'tell application "Campfire" to quit' >/dev/null 2>&1 || true
+    sleep 1
+fi
+
 if [ -d "$INSTALL_PATH" ]; then
     rm -rf "$INSTALL_PATH"
 fi
 
 ditto "$MOUNT_POINT/Campfire.app" "$INSTALL_PATH"
-hdiutil detach "$MOUNT_POINT" -quiet 2>/dev/null || true
+
+# 터미널 설치는 사용자가 명시적으로 실행한 경로이므로 quarantine을 제거해
+# 최초 실행 시 Gatekeeper의 미인증 개발자 차단을 피한다.
 xattr -d com.apple.quarantine "$INSTALL_PATH" 2>/dev/null || true
-codesign --force --deep --sign - "$INSTALL_PATH" >/dev/null 2>&1
+
+INSTALLED_VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$INSTALL_PATH/Contents/Info.plist" 2>/dev/null || true)
 
 echo ""
-echo "설치 완료!"
+if [ -n "$INSTALLED_VERSION" ]; then
+    echo "설치 완료! (v$INSTALLED_VERSION)"
+else
+    echo "설치 완료!"
+fi
 echo ""
 
 open "$INSTALL_PATH"
